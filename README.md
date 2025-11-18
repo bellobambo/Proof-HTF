@@ -55,3 +55,15 @@ After setting the variable, you can run the deployment with the Sepolia network:
 ```shell
 npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
 ```
+
+
+
+
+Batch #1
+  Executed ProofModule#ProofHTF
+
+[ ProofModule ] successfully deployed 🚀
+
+Deployed Addresses
+
+ProofModule#ProofHTF - 0x179BF34155cD129FeB3b2440f50418C4836e65D6

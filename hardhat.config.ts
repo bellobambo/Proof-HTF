@@ -1,5 +1,16 @@
+import "dotenv/config";
 import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
 import { configVariable, defineConfig } from "hardhat/config";
+
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
+const SEPOLIA_PRIVATE_KEY = process.env.SEPOLIA_PRIVATE_KEY;
+
+if (!SEPOLIA_RPC_URL) {
+  throw new Error("Please set your SEPOLIA_RPC_URL in a .env file");
+}
+if (!SEPOLIA_PRIVATE_KEY) {
+  throw new Error("Please set your SEPOLIA_PRIVATE_KEY in a .env file");
+}
 
 export default defineConfig({
   plugins: [hardhatToolboxMochaEthersPlugin],
@@ -31,8 +42,8 @@ export default defineConfig({
     sepolia: {
       type: "http",
       chainType: "l1",
-      url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+      url: SEPOLIA_RPC_URL,
+      accounts: [SEPOLIA_PRIVATE_KEY],
     },
   },
 });
