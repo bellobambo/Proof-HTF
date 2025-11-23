@@ -56,29 +56,54 @@ contract ProofHTF {
 
     // Events
     event UserRegistered(address indexed user, string name, Role role);
-    event CourseCreated(uint256 indexed courseId, string title, address indexed tutor);
+    event CourseCreated(
+        uint256 indexed courseId,
+        string title,
+        address indexed tutor
+    );
     event EnrollmentCreated(address indexed student, uint256 indexed courseId);
-    event ExamCreated(uint256 indexed examId, uint256 indexed courseId, string title);
-    event ExamCompleted(uint256 indexed examId, address indexed student, uint256 score);
+    event ExamCreated(
+        uint256 indexed examId,
+        uint256 indexed courseId,
+        string title
+    );
+    event ExamCompleted(
+        uint256 indexed examId,
+        address indexed student,
+        uint256 score
+    );
 
     // Modifiers
     modifier onlyTutor() {
-        require(registeredUsers[msg.sender] && users[msg.sender].role == Role.TUTOR, "Not a tutor");
+        require(
+            registeredUsers[msg.sender] && users[msg.sender].role == Role.TUTOR,
+            "Not a tutor"
+        );
         _;
     }
 
     modifier onlyStudent() {
-        require(registeredUsers[msg.sender] && users[msg.sender].role == Role.STUDENT, "Not a student");
+        require(
+            registeredUsers[msg.sender] &&
+                users[msg.sender].role == Role.STUDENT,
+            "Not a student"
+        );
         _;
     }
 
     modifier courseExists(uint256 courseId) {
-        require(courseId < courseCounter && courses[courseId].isActive, "Course not found");
+        require(
+            courseId < courseCounter && courses[courseId].isActive,
+            "Course not found"
+        );
         _;
     }
 
     modifier examExists(uint256 examId) {
-        require(examId < examCounter && exams[examId].isActive, "Exam not found");
+        require(
+            examId < examCounter && exams[examId].isActive,
+            "Exam not found"
+        );
         _;
     }
 
@@ -109,7 +134,9 @@ contract ProofHTF {
         emit CourseCreated(courseId, title, msg.sender);
     }
 
-    function enrollInCourse(uint256 courseId) public onlyStudent courseExists(courseId) {
+    function enrollInCourse(
+        uint256 courseId
+    ) public onlyStudent courseExists(courseId) {
         require(!courseEnrollments[courseId][msg.sender], "Already enrolled");
         courseEnrollments[courseId][msg.sender] = true;
         emit EnrollmentCreated(msg.sender, courseId);
@@ -126,8 +153,14 @@ contract ProofHTF {
         require(courses[courseId].tutor == msg.sender, "Not course owner");
         require(bytes(title).length > 0, "Title cannot be empty");
         require(questionTexts.length > 0, "At least one question required");
-        require(questionTexts.length == questionOptions.length, "Question-options length mismatch");
-        require(questionTexts.length == correctAnswers.length, "Question-answers length mismatch");
+        require(
+            questionTexts.length == questionOptions.length,
+            "Question-options length mismatch"
+        );
+        require(
+            questionTexts.length == correctAnswers.length,
+            "Question-answers length mismatch"
+        );
 
         uint256 examId = examCounter;
         exams[examId] = Exam({
@@ -141,11 +174,17 @@ contract ProofHTF {
 
         // Store questions, options, and correct answers
         for (uint256 i = 0; i < questionTexts.length; i++) {
-            require(bytes(questionTexts[i]).length > 0, "Question text cannot be empty");
+            require(
+                bytes(questionTexts[i]).length > 0,
+                "Question text cannot be empty"
+            );
             require(correctAnswers[i] < 4, "Correct answer index must be 0-3");
 
             for (uint256 j = 0; j < 4; j++) {
-                require(bytes(questionOptions[i][j]).length > 0, "Option text cannot be empty");
+                require(
+                    bytes(questionOptions[i][j]).length > 0,
+                    "Option text cannot be empty"
+                );
             }
 
             examQuestions[examId][i] = questionTexts[i];
@@ -159,9 +198,15 @@ contract ProofHTF {
     }
 
     // Core Assessment System
-    function takeExam(uint256 examId, uint256[] memory answers) public onlyStudent examExists(examId) returns (uint256) {
+    function takeExam(
+        uint256 examId,
+        uint256[] memory answers
+    ) public onlyStudent examExists(examId) returns (uint256) {
         Exam storage exam = exams[examId];
-        require(courseEnrollments[exam.courseId][msg.sender], "Not enrolled in course");
+        require(
+            courseEnrollments[exam.courseId][msg.sender],
+            "Not enrolled in course"
+        );
 
         // Return previous score if exam already completed
         if (examSessions[examId][msg.sender].isCompleted) {
@@ -197,11 +242,16 @@ contract ProofHTF {
     }
 
     // Essential View Functions
-    function getExamQuestions(uint256 examId)
+    function getExamQuestions(
+        uint256 examId
+    )
         public
         view
         examExists(examId)
-        returns (string[] memory questionTexts, string[4][] memory questionOptions)
+        returns (
+            string[] memory questionTexts,
+            string[4][] memory questionOptions
+        )
     {
         Exam storage exam = exams[examId];
         questionTexts = new string[](exam.questionCount);
@@ -215,14 +265,19 @@ contract ProofHTF {
         return (questionTexts, questionOptions);
     }
 
-    function getExamResults(uint256 examId, address student)
+    function getExamResults(
+        uint256 examId,
+        address student
+    )
         public
         view
         examExists(examId)
         returns (uint256 rawScore, uint256[] memory answers, bool isCompleted)
     {
         require(
-            msg.sender == student || (registeredUsers[msg.sender] && users[msg.sender].role == Role.TUTOR),
+            msg.sender == student ||
+                (registeredUsers[msg.sender] &&
+                    users[msg.sender].role == Role.TUTOR),
             "Unauthorized access"
         );
 
@@ -230,72 +285,50 @@ contract ProofHTF {
         return (session.score, session.answers, session.isCompleted);
     }
 
-    // NEW FUNCTION: Get past exam questions with answers for revision
-    function getPastExamForRevision(uint256 examId)
+    // NEW FUNCTION: Get past exam questions for revision (MINIMAL VERSION)
+    function getPastExamForRevision(
+        uint256 examId
+    )
         public
         view
         examExists(examId)
-        onlyStudent
         returns (
             string[] memory questionTexts,
-            string[4][] memory questionOptions,
-            uint256[] memory correctAnswers,
-            uint256[] memory studentAnswers,
-            bool[] memory isCorrect,
-            uint256 studentScore,
-            uint256 maxScore
+            string[4][] memory questionOptions
         )
     {
         Exam storage exam = exams[examId];
-        ExamSession storage session = examSessions[examId][msg.sender];
 
-        // Check if student is enrolled in the course
-        require(courseEnrollments[exam.courseId][msg.sender], "Not enrolled in course");
+        // REMOVED: Enrollment check
+        // REMOVED: Exam completion check
 
-        // Check if student has completed the exam
-        require(session.isCompleted, "Must complete exam before viewing revision");
-
-        // Initialize arrays
+        // Initialize arrays with only questions and options
         questionTexts = new string[](exam.questionCount);
         questionOptions = new string[4][](exam.questionCount);
-        correctAnswers = new uint256[](exam.questionCount);
-        studentAnswers = new uint256[](exam.questionCount);
-        isCorrect = new bool[](exam.questionCount);
-        studentScore = session.score;
-        maxScore = exam.questionCount;
 
-        // Populate all data for comprehensive revision
+        // Populate only questions and options (no answers)
         for (uint256 i = 0; i < exam.questionCount; i++) {
             questionTexts[i] = examQuestions[examId][i];
             questionOptions[i] = examOptions[examId][i];
-            correctAnswers[i] = examCorrectAnswers[examId][i];
-            studentAnswers[i] = session.answers[i];
-            isCorrect[i] = (session.answers[i] == examCorrectAnswers[examId][i]);
         }
 
-        return (
-            questionTexts,
-            questionOptions,
-            correctAnswers,
-            studentAnswers,
-            isCorrect,
-            studentScore,
-            maxScore
-        );
+        return (questionTexts, questionOptions);
     }
 
     // Course Management Enhancements
-    function getEnrolledCourses(address student) public view returns (Course[] memory) {
+    function getEnrolledCourses(
+        address student
+    ) public view returns (Course[] memory) {
         Course[] memory enrolledCourses = new Course[](courseCounter);
         uint256 count = 0;
-        
+
         for (uint256 i = 0; i < courseCounter; i++) {
             if (courseEnrollments[i][student] && courses[i].isActive) {
                 enrolledCourses[count] = courses[i];
                 count++;
             }
         }
-        
+
         // Resize array
         Course[] memory result = new Course[](count);
         for (uint256 i = 0; i < count; i++) {
@@ -304,17 +337,19 @@ contract ProofHTF {
         return result;
     }
 
-    function getTutorCourses(address tutor) public view returns (Course[] memory) {
+    function getTutorCourses(
+        address tutor
+    ) public view returns (Course[] memory) {
         Course[] memory tutorCourses = new Course[](courseCounter);
         uint256 count = 0;
-        
+
         for (uint256 i = 0; i < courseCounter; i++) {
             if (courses[i].tutor == tutor && courses[i].isActive) {
                 tutorCourses[count] = courses[i];
                 count++;
             }
         }
-        
+
         Course[] memory result = new Course[](count);
         for (uint256 i = 0; i < count; i++) {
             result[i] = tutorCourses[i];
@@ -323,11 +358,15 @@ contract ProofHTF {
     }
 
     // Helper Functions
-    function getCourse(uint256 courseId) public view courseExists(courseId) returns (Course memory) {
+    function getCourse(
+        uint256 courseId
+    ) public view courseExists(courseId) returns (Course memory) {
         return courses[courseId];
     }
 
-    function getExam(uint256 examId) public view examExists(examId) returns (Exam memory) {
+    function getExam(
+        uint256 examId
+    ) public view examExists(examId) returns (Exam memory) {
         return exams[examId];
     }
 }

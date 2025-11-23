@@ -66,4 +66,4 @@ Batch #1
 
 Deployed Addresses
 
-ProofModule#ProofHTF - 0x179BF34155cD129FeB3b2440f50418C4836e65D6
+ProofModule#ProofHTF - 0x6bcEf738a4e1A3753Ae4652A08909a7665E709bd
