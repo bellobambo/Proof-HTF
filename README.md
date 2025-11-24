@@ -1,69 +1,54 @@
-# Sample Hardhat 3 Beta Project (`mocha` and `ethers`)
+# ProofHTF Smart Contract 📚
 
-This project showcases a Hardhat 3 Beta project using `mocha` for tests and the `ethers` library for Ethereum interactions.
+A blockchain-based learning platform where tutors can create courses and exams, and students can enroll and take tests.
 
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+**Contract Address:** `0x6bcEf738a4e1A3753Ae4652A08909a7665E709bd`
 
-## Project Overview
+## 🎯 What Does It Do?
 
-This example project includes:
+ProofHTF is like an online classroom on the blockchain. Teachers create courses and tests, students sign up and take exams, and everything is recorded permanently and transparently.
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+## ✨ Main Features
 
-## Usage
+### 👥 Two Types of Users
+- **Tutors** 👨‍🏫 - Create and manage courses and exams
+- **Students** 👨‍🎓 - Enroll in courses and take tests
 
-### Running Tests
+### 📖 What Tutors Can Do
+- Create courses with titles
+- Make multiple-choice exams (4 options per question)
+- View their courses and student results
 
-To run all the tests in the project, execute the following command:
+### 📝 What Students Can Do
+- Browse and enroll in courses
+- Take exams and get instant scores
+- Review past exam questions for practice
+- Track their exam history and results
 
-```shell
-npx hardhat test
-```
+## 🚀 How It Works
 
-You can also selectively run the Solidity or `mocha` tests:
+1. **Sign Up** - Register as either a tutor or student
+2. **Tutors Create** - Tutors set up courses and add exams
+3. **Students Enroll** - Students join courses they're interested in
+4. **Take Exams** - Students answer questions and get scored automatically
+5. **Study & Review** - Access past exams to prepare for future tests
 
-```shell
-npx hardhat test solidity
-npx hardhat test mocha
-```
+## 🔐 Key Benefits
 
-### Make a deployment to Sepolia
+- ✅ Transparent grading (no cheating!)
+- ✅ Permanent record of achievements
+- ✅ Instant exam results
+- ✅ Secure and tamper-proof
+- ✅ No middleman needed
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+## 💡 Quick Example
 
-To run the deployment to a local chain:
+**For Tutors:**
+Create a course → Add an exam with questions,options and answer → Students take it → View results
 
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
-```
+**For Students:**
+Enroll in a course → Take the exam → Get your score → Review questions later
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+---
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
-
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
-```
-
-After setting the variable, you can run the deployment with the Sepolia network:
-
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
-```
-
-
-
-
-Batch #1
-  Executed ProofModule#ProofHTF
-
-[ ProofModule ] successfully deployed 🚀
-
-Deployed Addresses
-
-ProofModule#ProofHTF - 0x6bcEf738a4e1A3753Ae4652A08909a7665E709bd
+*Built with ❤️ for decentralized learning*
