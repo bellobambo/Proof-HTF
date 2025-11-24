@@ -49,6 +49,5 @@ Create a course → Add an exam with questions,options and answer → Students t
 **For Students:**
 Enroll in a course → Take the exam → Get your score → Review questions later
 
----
 
-*Built with ❤️ for decentralized learning*
+Frontend: https://github.com/bellobambo/proof-htf_fe
